@@ -1,12 +1,11 @@
 
-
-const express = require("express");
-const sequelize = require("sequelize");
 const request = require("request");
 var db = require("../models");
 var moment = require("moment");
 const nodemailer = require("nodemailer");
-const firebase = require("firebase");
+//const firebase = require("firebase");
+const fbApp = require("../config/fb-config");
+const axios = require("axios");
 
 module.exports = function (app) {
   app.get("/signup", function (req, res) {
@@ -22,18 +21,17 @@ module.exports = function (app) {
 
   // POST route for new user
   app.post("/signup", function (req, res) {
-    var database = firebase.database();
-    var user = firebase.auth().currentUser;
+    //var database = firebase.database();
+   // var user = firebase.auth().currentUser;
     var email = req.body.email;
     var password = req.body.pswd;
     var displayName = req.body.displayName;
-    var uid = req.body.uid;
-    var uid;
-    firebase
-      .auth()
+    // var uid = req.body.uid;
+    // var uid;
+    fbApp
       .createUserWithEmailAndPassword(email, password)
       .then((data) => {
-        uid = data.uid
+        const uid = data.uid
         db.User.create({
           displayName: displayName,
           email: email,
@@ -50,8 +48,7 @@ module.exports = function (app) {
 
   app.post("/api/authenticate", function (req, res) {
     console.log(req.body.email, req.body.pswd)
-    firebase
-      .auth()
+    fbApp
       .signInWithEmailAndPassword(req.body.email, req.body.pswd)
       .then((data) => {
         console.log(data)
@@ -73,7 +70,7 @@ module.exports = function (app) {
   });
 
   app.get("/dashboard", function(req,res) {
-    const user = firebase.auth().currentUser;
+    const user = fbApp.auth().currentUser;
     if (user) {
       db.User.findOne({
         where: {
@@ -113,16 +110,89 @@ module.exports = function (app) {
   var genreName = req.body.genreName;
   var userId = req.body.userId;
 
-  db.Movie.create({
-  genreId: genreId,
-  genreName: genreName,
-  UserId: parseInt(userId)
-   }).then(function (res) {
-  console.log(res);
-  });
-  });
+      db.Movie.create({
+      genreId: genreId,
+      genreName: genreName,
+      UserId: parseInt(userId)
+      }).then(function (res) {
+      console.log(res);
+        });
+  
+//----------------Convert Genre--------------------------------------
+      var queryURL = `https://api.themoviedb.org/3/genre/movie/list?api_key=${api_key}&language=en-US`;
 
-  app.get("/", function (req, res) {
+      axios({
+        url: queryURL,
+        method: "GET",
+        headers: {
+        Accept: "application/json",
+          "api_key": process.env.TMDB_API_KEY,
+        },
+      })
+        .then(function (convertGenre) {
+          
+          // console.log(response);
+          callback(convertGenre.data);
+        })
+        .catch(function (err) {
+          console.error(err);
+        });
+
+      //-------------------------Call movie info --------------------------------------------
+      var URL =`https://api.themoviedb.org/3/discover/movie?api_key=${api_key}&language=en-US&region=US&sort_by=release_date.asc&include_video=false&page=1&primary_release_date.gte=" + today + "&with_genres=" + ${genreId}`;
+
+      axios({
+        url:URL,
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "api_key": process.env.TMDB_API_KEY,
+        },
+      })
+        .then(function (showMovie) {
+          
+          callback(showMovie.data);
+        })
+        .catch(function (err) {
+          console.error(err);
+        });
+  });
+// var queryLimit = 8;
+// var today = moment().format('YYYY-MM-DD');
+
+// //call movie api
+// $('#search').click(function(){
+// event.preventDefault();
+// $('#movieList').empty();
+// var genreId = $('select').val();
+
+// var queryURL = "https://api.themoviedb.org/3/discover/movie?api_key=3d866c05691ba06f9fa697f8e8c9e838&language=en-US&region=US&sort_by=release_date.asc&include_video=false&page=1&primary_release_date.gte=" + today + "&with_genres=" + genreId;
+
+// $.ajax({
+//   url: queryURL,
+//   method: "GET"
+// }).done(function(response) {
+//   var movies = response.results; 
+
+//   for (i = 0; i < movies.length; i++) {
+
+//     var posterURL = "https://image.tmdb.org/t/p/w500/" + movies[i].poster_path;
+
+//       $('#movieList').append(
+
+//         "<ul style='list-style-type: none'><li>Movie ID: " +
+//         movies[i].id + "</li><li>Movie Title: " +
+//         movies[i].title + "</li><li>Release Date: " +
+//         movies[i].release_date + "</li><li> <img style='width: 300px; height: auto' src='" +
+//         posterURL + "'></li><li>Overview:<br>" +
+//         movies[i].overview + "</li></ul><hr>"
+
+//       );
+//   };
+//   });
+// });
+
+app.get("/", function (req, res) {
     res.render("login", { title: "Signin Page" });
   });
 
@@ -254,5 +324,5 @@ module.exports = function (app) {
         res.send(true);
       });
     });
-  });
- };
+  }); 
+}

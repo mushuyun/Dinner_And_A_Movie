@@ -1,56 +1,94 @@
 
+// function convertGenre(){
+  var genres = response.genres;
+    for (i = 0; i < genres.length; i++) {
 
-            var queryURL = "https://api.themoviedb.org/3/genre/movie/list?api_key=3d866c05691ba06f9fa697f8e8c9e838&language=en-US";
+        $('select').append(
+
+          "<option value='" + genres[i].id + "'>" + genres[i].name + "</option>"
+        );
+    };
+// }
+
+// function showMovie(){
+
+    var queryLimit = 8;
+    var today = moment().format('YYYY-MM-DD');
+    //call movie api
+    $('#search').click(function(){
+    event.preventDefault();
+    $('#movieList').empty();
+    var genreId = $('select').val();
+    console.log(response);
+    var movies = response.results; 
+
+    for (i = 0; i < movies.length; i++) {
+
+    var posterURL = "https://image.tmdb.org/t/p/w500/" + movies[i].poster_path;
+
+      $('#movieList').append(
+
+        "<ul style='list-style-type: none'><li>Movie ID: " +
+        movies[i].id + "</li><li>Movie Title: " +
+        movies[i].title + "</li><li>Release Date: " +
+        movies[i].release_date + "</li><li> <img style='width: 300px; height: auto' src='" +
+        posterURL + "'></li><li>Overview:<br>" +
+        movies[i].overview + "</li></ul><hr>"
+      );
+    }
+  });
+//ss}
+      //       var queryURL = "https://api.themoviedb.org/3/genre/movie/list?api_key=3d866c05691ba06f9fa697f8e8c9e838&language=en-US";
       
-            $.ajax({
-              url: queryURL,
-              method: "GET"
-            }).done(function(response) {
-              var genres = response.genres;
-              for (i = 0; i < genres.length; i++) {
+      //       $.ajax({
+      //         url: queryURL,
+      //         method: "GET"
+      //       }).done(function(response) {
+      //         var genres = response.genres;
+      //         for (i = 0; i < genres.length; i++) {
     
-                  $('select').append(
+      //             $('select').append(
     
-                    "<option value='" + genres[i].id + "'>" + genres[i].name + "</option>"
-                  );
-              };
-              });
-    
+      //               "<option value='" + genres[i].id + "'>" + genres[i].name + "</option>"
+      //             );
+      //         };
+      //         });
+
         
-        var queryLimit = 8;
-        var today = moment().format('YYYY-MM-DD');
+      //   var queryLimit = 8;
+      //   var today = moment().format('YYYY-MM-DD');
     
-      //call movie api
-        $('#search').click(function(){
-          event.preventDefault();
-            $('#movieList').empty();
-            var genreId = $('select').val();
+      // //call movie api
+      //   $('#search').click(function(){
+      //     event.preventDefault();
+      //       $('#movieList').empty();
+      //       var genreId = $('select').val();
     
-          var queryURL = "https://api.themoviedb.org/3/discover/movie?api_key=3d866c05691ba06f9fa697f8e8c9e838&language=en-US&region=US&sort_by=release_date.asc&include_video=false&page=1&primary_release_date.gte=" + today + "&with_genres=" + genreId;
+      //     var queryURL = "https://api.themoviedb.org/3/discover/movie?api_key=3d866c05691ba06f9fa697f8e8c9e838&language=en-US&region=US&sort_by=release_date.asc&include_video=false&page=1&primary_release_date.gte=" + today + "&with_genres=" + genreId;
     
-          $.ajax({
-              url: queryURL,
-              method: "GET"
-            }).done(function(response) {
-              var movies = response.results; 
+      //     $.ajax({
+      //         url: queryURL,
+      //         method: "GET"
+      //       }).done(function(response) {
+      //         var movies = response.results; 
     
-              for (i = 0; i < movies.length; i++) {
+      //         for (i = 0; i < movies.length; i++) {
     
-                var posterURL = "https://image.tmdb.org/t/p/w500/" + movies[i].poster_path;
+      //           var posterURL = "https://image.tmdb.org/t/p/w500/" + movies[i].poster_path;
     
-                  $('#movieList').append(
+      //             $('#movieList').append(
     
-                    "<ul style='list-style-type: none'><li>Movie ID: " +
-                    movies[i].id + "</li><li>Movie Title: " +
-                    movies[i].title + "</li><li>Release Date: " +
-                    movies[i].release_date + "</li><li> <img style='width: 300px; height: auto' src='" +
-                    posterURL + "'></li><li>Overview:<br>" +
-                    movies[i].overview + "</li></ul><hr>"
+      //               "<ul style='list-style-type: none'><li>Movie ID: " +
+      //               movies[i].id + "</li><li>Movie Title: " +
+      //               movies[i].title + "</li><li>Release Date: " +
+      //               movies[i].release_date + "</li><li> <img style='width: 300px; height: auto' src='" +
+      //               posterURL + "'></li><li>Overview:<br>" +
+      //               movies[i].overview + "</li></ul><hr>"
     
-                  );
-              };
-              });
-        });
+      //             );
+      //         };
+      //         });
+      //   });
           
     //posting Movie data to backend
           $("#saveGenre").on("click", function(event){
