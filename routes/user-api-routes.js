@@ -1,12 +1,12 @@
 
 
-const express = require("express");
-const sequelize = require("sequelize");
 const request = require("request");
 var db = require("../models");
 var moment = require("moment");
 const nodemailer = require("nodemailer");
-const firebase = require("firebase");
+//const firebase = require("firebase");
+const fbApp = require("../config/fb-config");
+const axios = require("axios");
 
 module.exports = function (app) {
   app.get("/signup", function (req, res) {
@@ -22,18 +22,17 @@ module.exports = function (app) {
 
   // POST route for new user
   app.post("/signup", function (req, res) {
-    var database = firebase.database();
-    var user = firebase.auth().currentUser;
+    //var database = firebase.database();
+   // var user = firebase.auth().currentUser;
     var email = req.body.email;
     var password = req.body.pswd;
     var displayName = req.body.displayName;
-    var uid = req.body.uid;
-    var uid;
-    firebase
-      .auth()
+    // var uid = req.body.uid;
+    // var uid;
+    fbApp
       .createUserWithEmailAndPassword(email, password)
       .then((data) => {
-        uid = data.uid
+        const uid = data.uid
         db.User.create({
           displayName: displayName,
           email: email,
@@ -50,8 +49,7 @@ module.exports = function (app) {
 
   app.post("/api/authenticate", function (req, res) {
     console.log(req.body.email, req.body.pswd)
-    firebase
-      .auth()
+    fbApp
       .signInWithEmailAndPassword(req.body.email, req.body.pswd)
       .then((data) => {
         console.log(data)
@@ -73,7 +71,7 @@ module.exports = function (app) {
   });
 
   app.get("/dashboard", function(req,res) {
-    const user = firebase.auth().currentUser;
+    const user = fbApp.auth().currentUser;
     if (user) {
       db.User.findOne({
         where: {
@@ -107,7 +105,7 @@ module.exports = function (app) {
       })   
     }
   });
-
+  
   app.post("/movie-dinner", function (req, res) {
   var genreId = req.body.genreId;
   var genreName = req.body.genreName;
