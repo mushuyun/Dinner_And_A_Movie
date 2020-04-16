@@ -70,7 +70,7 @@ module.exports = function (app) {
       });
   });
 
-  app.get("/dashboard", function(req,res) {
+  app.get("/dashboard", function(req, res) {
     const user = fbApp.auth().currentUser;
     if (user) {
       db.User.findOne({
