@@ -4,7 +4,7 @@ const request = require("request");
 var db = require("../models");
 var moment = require("moment");
 const nodemailer = require("nodemailer");
-//const firebase = require("firebase");
+const firebase = require("firebase");
 const fbApp = require("../config/fb-config");
 const axios = require("axios");
 
@@ -71,7 +71,7 @@ module.exports = function (app) {
   });
 
   app.get("/dashboard", function(req, res) {
-    const user = fbApp.auth().currentUser;
+    const user = firebase.auth().currentUser;
     if (user) {
       db.User.findOne({
         where: {
