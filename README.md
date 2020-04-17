@@ -52,5 +52,7 @@ Heroku link for this project: https://sue-movie-dinner.herokuapp.com/
    #### Images: 
 
    **Responsiveness View - I-Phone 6/7/8**
-
-   ![Main Page](./Images/I-Phone-6-7-8.png)
+   
+   ![signup](./public/assets/images/SignUp.png)
+   ![login](./public/assets/images/Login.png)
+   ![Main Page](./public/assets/images/dm.png)
