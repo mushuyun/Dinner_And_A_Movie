@@ -3,9 +3,6 @@
       url: "/api/movie-dinner/genres",
       method: "GET"
     }).then(function(response) {
-      // if(response.genreId){
-      //   localStorage.setItem("api_key", response.api_key);
-      // };
       
       console.log(response);
       var genres = response.genres;
@@ -21,15 +18,26 @@
   //sending genreId to movieApi
 
     var genreId = $('select').val();
+    var genreName = $("select option:selected").text().trim();
+
+    localStorage.setItem("genreId", JSON.stringify(genreId));
+    localStorage.setItem("genreName", JSON.stringify(genreName));
+
+    var genreId2 = localStorage.getItem("genreId");
+    var genreName2 = localStorage.getItem("genreName");
+
+    console.log(genreId2, genreName2);
+
     $.ajax({
       url:"/api/movie-dinner/movies",
       method: "POST",
-      data: {id: genreId} 
-    }).then(function(res){
-      res.send();
+      data: genreId
+    }).then(function(res, data){
+      res.send(data);
     });
 
-
+    
+      
 var queryLimit = 8;
 var today = moment().format('YYYY-MM-DD');
 
@@ -38,12 +46,9 @@ $("#search").click(function () {
   //var api_key = localStorage.getItem("api_key");
   event.preventDefault();
   $("#movieList").empty();
-  var genreId = $("select").val();
+  var genreId = $("select").val().trim();
   console.log(genreId);
-  //var api_key = process.env.TMDB_API_KEY;
-  // var queryURL =
-  // `https://api.themoviedb.org/3/discover/movie?api_key=${api_key}&language=en-US&region=US&sort_by=release_date.asc&include_video=false&page=1&primary_release_date.gte=${today}&with_genres=${genreId}`
-
+  
   $.ajax({
     url: "/api/movie-dinner/movies",
     method: "GET",
@@ -81,7 +86,9 @@ $("#saveGenre").on("click", function (event) {
   var Movie = {
     genreId: genreId,
     genreName: genreName,
-    userId: localStorage.getItem("loggedInUserId"),
+    // genreId: localStorage.getItem("genreId"),
+    // genreName: localStorage.getItem("genreName"),
+    userId: localStorage.getItem("loggedInUserId")
   };
 
   console.log(Movie);

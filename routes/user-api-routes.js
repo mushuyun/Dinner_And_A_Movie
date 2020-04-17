@@ -154,9 +154,15 @@ module.exports = function (app) {
         });
       }
    }); 
-    
+  
+  // app.get("/api/movie-dinner/movies", function(res, req){
+  //   // res.render("api/movie-dinner/movies", {
+  //   //   title: "api/Movie-Dinner"
+  //     res.json();
+  // });
+
   app.post("/api/movie-dinner/movies", function(res, req){
-    
+    var genreId = req.body.genreId;
     var movieId = req.body.id;
     var movieTitle = req.body.title;
     var movieReleaseDate = req.body.release_date;
@@ -195,14 +201,14 @@ module.exports = function (app) {
         .catch(function (err) {
           console.error(err);
         });
-    }
-  });  
+      }
+    });  
        
 
 
-app.get("/", function (req, res) {
-    res.render("login", { title: "Signin Page" });
-  });
+  app.get("/", function (req, res) {
+      res.render("login", { title: "Signin Page" });
+    });
 
 //---------------------------------------------------------------------------------
   // app.post("/api/", function(req,res){
@@ -240,7 +246,7 @@ app.get("/", function (req, res) {
      });
   });
 // leave lines 150 -159 commented out
-  // app.delete("/api/users/:id", function(req, res) {
+  // app.delete("/delete/api/users/:id", function(req, res) {
   //   db.User.destroy({
   //     where: {
   //       id: req.params.id
@@ -261,7 +267,7 @@ app.get("/", function (req, res) {
     });
    });
 // leave lines 170 -178 commented out
-  // app.delete("/api/movies/:id", function(req, res) {
+  // app.delete("/delete/api/movies/:id", function(req, res) {
   //   db.Movie.destroy({
   //     where: {
   //       id: req.params.id
