@@ -1,12 +1,11 @@
 
-
 const request = require("request");
 var db = require("../models");
 var moment = require("moment");
 const nodemailer = require("nodemailer");
 const firebase = require("firebase");
 const fbApp = require("../config/fb-config");
-const axios = require("axios");
+var axios = require("axios");
 
 module.exports = function (app) {
   app.get("/signup", function (req, res) {
@@ -72,6 +71,7 @@ module.exports = function (app) {
 
   app.get("/dashboard", function(req, res) {
     const user = firebase.auth().currentUser;
+    //const user = fbApp.auth().currentUser;
     if (user) {
       db.User.findOne({
         where: {
@@ -105,22 +105,102 @@ module.exports = function (app) {
       })   
     }
   });
-  
-  app.post("/movie-dinner", function (req, res) {
+
+  app.post("movie-dinner", function (req, res) {
   var genreId = req.body.genreId;
   var genreName = req.body.genreName;
   var userId = req.body.userId;
 
-  db.Movie.create({
-  genreId: genreId,
-  genreName: genreName,
-  UserId: parseInt(userId)
-   }).then(function (res) {
-  console.log(res);
-  });
-  });
+      db.Movie.create({
+      genreId: genreId,
+      genreName: genreName,
+      UserId: parseInt(userId)
+      }).then(function (res) {
+      console.log(res);
+        });
+    });
+  
+  // app.get("/api/movie-dinner/genres", function(req, res){
+  //   res.render("/api/movie-dinner/genres", {
+  //     title: "Movie-genre"
+  //   });
+  // });
 
-  app.get("/", function (req, res) {
+  app.get("/api/movie-dinner/genres", function(req, res){
+
+    var genreId = req.body.genreId;
+    var genreName = req.body.genreName;
+
+    genreApi(genreId, genreName, data => {
+      console.log(data);
+      res.json(data);
+    });
+    
+    function genreApi(genreId, genreName, callback){
+      var api_key = process.env.TMDB_API_KEY;        
+      var queryURL = `https://api.themoviedb.org/3/genre/movie/list?api_key=${api_key}&language=en-US`;  
+      
+
+      axios({
+        url: queryURL,
+        method: "GET",
+      })
+        .then(function (response) {
+          // console.log(response);
+          callback(response.data);
+        })
+        .catch(function (err) {
+          console.error(err);
+        });
+      }
+   }); 
+    
+  app.post("/api/movie-dinner/movies", function(res, req){
+    
+    var movieId = req.body.id;
+    var movieTitle = req.body.title;
+    var movieReleaseDate = req.body.release_date;
+    var posterURL = `"https://image.tmdb.org/t/p/w500/${req.body.poster_path}`;
+    var movieOverView = req.body.overview;
+
+    movieApi(movieId, movieTitle, movieReleaseDate, posterURL, movieOverView, data =>{
+      console.log(data);
+      res.json(data);
+    });
+  
+      
+    function movieApi(movieId, movieTitle, movieReleaseDate, posterURL, movieOverView, callback){
+      var api_key = process.env.TMDB_API_KEY; 
+      var today = moment().format('YYYY-MM-DD');
+      
+      var URL =`https://api.themoviedb.org/3/discover/movie?api_key=${api_key}&language=en-US&region=US&sort_by=release_date.asc&include_video=false&page=1&primary_release_date.gte=${today}&with_genres=${genreId}`;
+    
+      axios({
+        url: URL,
+        method: "GET",
+      })
+        .then(function (response) {
+        
+        // var movieId = response.results.id;
+        // var movieTitle = response.results.title;
+        // var  movieReleaseDate = response.results.release_date;
+        // var posterURL= `"https://image.tmdb.org/t/p/w500/${response.results.poster_path}`;
+            
+        // var movieOverView = response.results.overview;
+          
+        callback(response.data);
+        console.log(response.data);
+        })
+        
+        .catch(function (err) {
+          console.error(err);
+        });
+    }
+  });  
+       
+
+
+app.get("/", function (req, res) {
     res.render("login", { title: "Signin Page" });
   });
 
@@ -252,5 +332,5 @@ module.exports = function (app) {
         res.send(true);
       });
     });
-  });
- };
+  }); 
+}
