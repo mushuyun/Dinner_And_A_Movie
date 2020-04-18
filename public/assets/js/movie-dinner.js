@@ -1,78 +1,65 @@
 
 
-            
-    $.ajax({
-      url: "/api/movie-dinner/genres",
-      method: "GET"
-    }).then(function(response) {
-      // if(response.genreId){
-      //   localStorage.setItem("api_key", response.api_key);
-      // };
-      
-      console.log(response);
-      var genres = response.genres;
-      for (i = 0; i < genres.length; i++) {
+$.ajax({
+  url: "/api/movie-dinner/genres",
+  method: "GET"
+}).then(function(response) {
+  
+  console.log(response);
+  var genres = response.genres;
+  for (i = 0; i < genres.length; i++) {
 
-          $('select').append(
+      $('select').append(
 
-            "<option value='" + genres[i].id + "'>" + genres[i].name + "</option>"
-          );
-        };
-      });
+        "<option value='" + genres[i].id + "'>" + genres[i].name + "</option>"
+      );
+    };
+  });
 
-  //sending genreId to movieApi
-
-    var genreId = $('select').val();
-    $.ajax({
-      url:"/api/movie-dinner/movies",
-      method: "POST",
-      data: genreId 
-    }).then(function(res){
-      res.send();
-    });
-
-
-var queryLimit = 8;
-var today = moment().format('YYYY-MM-DD');
-
-//call movie api
+  
 $("#search").click(function () {
-  //var api_key = localStorage.getItem("api_key");
+  
   event.preventDefault();
   $("#movieList").empty();
   var genreId = $("select").val();
   console.log(genreId);
-  //var api_key = process.env.TMDB_API_KEY;
-  // var queryURL =
-  // `https://api.themoviedb.org/3/discover/movie?api_key=${api_key}&language=en-US&region=US&sort_by=release_date.asc&include_video=false&page=1&primary_release_date.gte=${today}&with_genres=${genreId}`
+    var genreId = $('select').val();
+    var genreName = $("select option:selected").text().trim();
+  //sending genreId to movieApi
+    $.ajax({
+      url:"/api/movie-dinner/movies",
+      method: "POST",
+      data: {genreId: genreId}
+    }).then(function(data){
+        var movies = data.results;
+        //loading movielist
+        $.ajax({
+          url: "/api/movie-dinner/movies",
+          method: "GET",
+        }).done(function (response) {
+        //for (i = 0; i < movies.length; i++) {
+          for (i = 0; i < 5; i++) {
+          var posterURL =
+            "https://image.tmdb.org/t/p/w500/" + movies[i].poster_path;
 
-  $.ajax({
-    url: "/api/movie-dinner/movies",
-    method: "GET",
-  }).done(function (response) {
-    var movies = response.results;
-
-    for (i = 0; i < movies.length; i++) {
-      var posterURL =
-        "https://image.tmdb.org/t/p/w500/" + movies[i].poster_path;
-
-      $("#movieList").append(
-        "<ul style='list-style-type: none'><li>Movie ID: " +
-          movies[i].movieId +
-          "</li><li>Movie Title: " +
-          movies[i].movieTitle +
-          "</li><li>Release Date: " +
-          movies[i].movieReleaseDate +
-          "</li><li> <img style='width: 300px; height: auto' src='" +
-          posterURL +
-          "'></li><li>Overview:<br>" +
-          movies[i].movieOverView +
-          "</li></ul><hr>"
-      );
-    }
+          $("#movieList").append(
+            "<ul style='list-style-type: none'><li>Movie ID: " +
+              movies[i].movieId +
+              "</li><li>Movie Title: " +
+              movies[i].movieTitle +
+              "</li><li>Release Date: " +
+              movies[i].movieReleaseDate +
+              "</li><li> <img style='width: 300px; height: auto' src='" +
+              posterURL +
+              "'></li><li>Overview:<br>" +
+              movies[i].movieOverView +
+              "</li></ul><hr>"
+          );
+        }
+      });
   });
 });
-
+      
 //posting Movie data to backend
 $("#saveGenre").on("click", function (event) {
   event.preventDefault();
@@ -83,7 +70,7 @@ $("#saveGenre").on("click", function (event) {
   var Movie = {
     genreId: genreId,
     genreName: genreName,
-    userId: localStorage.getItem("loggedInUserId"),
+    userId: localStorage.getItem("loggedInUserId")
   };
 
   console.log(Movie);
@@ -96,6 +83,7 @@ $("#saveGenre").on("click", function (event) {
     res.send();
   });
 });
+
   
 //---------- Information for recipe calls and routes-------
 
@@ -135,7 +123,3 @@ event.preventDefault();
         }) 
       })
   
-                 
-
-          
-                 
