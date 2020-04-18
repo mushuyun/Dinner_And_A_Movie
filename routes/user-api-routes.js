@@ -95,7 +95,6 @@ module.exports = function (app) {
           
             var hbsObject = {
               movies: moviesToReturn,
-              //movies:movieList.genreName,
               email: user.email,
               displayName: user.displayName
           };
@@ -112,7 +111,7 @@ module.exports = function (app) {
   var userId = req.body.userId;
 
       db.Movie.create({
-      genreId: genreId,
+      genreId: parseInt(genreId),
       genreName: genreName,
       UserId: parseInt(userId)
       }).then(function (res) {
@@ -121,10 +120,9 @@ module.exports = function (app) {
     });
   
   // app.get("/api/movie-dinner/genres", function(req, res){
-  //   res.render("/api/movie-dinner/genres", {
-  //     title: "Movie-genre"
+  //   res.json();
   //   });
-  // });
+  
 
   app.get("/api/movie-dinner/genres", function(req, res){
 
@@ -155,27 +153,12 @@ module.exports = function (app) {
       }
    }); 
   
-  // app.get("/api/movie-dinner/movies", function(res, req){
-  //   // res.render("api/movie-dinner/movies", {
-  //   //   title: "api/Movie-Dinner"
-  //     res.json();
-  // });
+  
 
   app.post("/api/movie-dinner/movies", function(res, req){
-    var genreId = req.body.genreId;
-    var movieId = req.body.id;
-    var movieTitle = req.body.title;
-    var movieReleaseDate = req.body.release_date;
-    var posterURL = `"https://image.tmdb.org/t/p/w500/${req.body.poster_path}`;
-    var movieOverView = req.body.overview;
-
-    movieApi(movieId, movieTitle, movieReleaseDate, posterURL, movieOverView, data =>{
-      console.log(data);
-      res.json(data);
-    });
-  
-      
-    function movieApi(movieId, movieTitle, movieReleaseDate, posterURL, movieOverView, callback){
+    
+    movieApi();
+    function movieApi(){
       var api_key = process.env.TMDB_API_KEY; 
       var today = moment().format('YYYY-MM-DD');
       
@@ -186,15 +169,10 @@ module.exports = function (app) {
         method: "GET",
       })
         .then(function (response) {
-        
-        // var movieId = response.results.id;
-        // var movieTitle = response.results.title;
-        // var  movieReleaseDate = response.results.release_date;
-        // var posterURL= `"https://image.tmdb.org/t/p/w500/${response.results.poster_path}`;
-            
-        // var movieOverView = response.results.overview;
           
-        callback(response.data);
+
+          res.send(reponse);
+    
         console.log(response.data);
         })
         
@@ -204,17 +182,10 @@ module.exports = function (app) {
       }
     });  
        
-
-
   app.get("/", function (req, res) {
       res.render("login", { title: "Signin Page" });
     });
 
-//---------------------------------------------------------------------------------
-  // app.post("/api/", function(req,res){
-  //     res.redirect("/dashboard");
-  // });
-//
   //find all users
   app.get("/api/users", function(req, res) {
     
@@ -246,7 +217,8 @@ module.exports = function (app) {
      });
   });
 // leave lines 150 -159 commented out
-  // app.delete("/delete/api/users/:id", function(req, res) {
+
+  // app.delete("/delete/users/:id", function(req, res) {
   //   db.User.destroy({
   //     where: {
   //       id: req.params.id
