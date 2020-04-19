@@ -70,9 +70,8 @@ module.exports = function (app) {
       });
   });
 
-  app.get("/dashboard", function(req, res) {
+  app.get("/dashboard", function(req,res) {
     const user = firebase.auth().currentUser;
-    //const user = fbApp.auth().currentUser;
     if (user) {
       db.User.findOne({
         where: {
@@ -80,24 +79,20 @@ module.exports = function (app) {
         },
       }).then(function(user) {
         db.Movie.findAll({
-          where: user.id = db.Movie.UserId
+          where: {UserId : user.id},
         }).then(function(data) {
-          
-          //console.log(data);  
-         moviesToReturn = [];
-        for (var i = 0; i < data.length; i++) { 
-
-            if (moviesToReturn.indexOf(data[data.length-1].dataValues.genreName) == -1) {
-              
-              
-              moviesToReturn.push(data[data.length-1].dataValues.genreName);
-            }
-          }
-          
-            var hbsObject = {
-              movies: moviesToReturn,
-              email: user.email,
-              displayName: user.displayName
+            
+          moviesToReturn = [];
+          for (var i = 0; i < data.length; i++) { 
+              if (moviesToReturn.indexOf(data[i].dataValues.genreName) == -1) {
+                moviesToReturn.push(data[i].dataValues.genreName);            
+              }
+          }         
+          var hbsObject = {
+            movies: moviesToReturn,
+            //movies:movieList.genreName,
+            email: user.email,
+            displayName: user.displayName
           };
         
           res.render("dashboard", hbsObject);
