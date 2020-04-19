@@ -8,45 +8,45 @@
 
 <div class="container">  
         
-  <div class="panel panel-default" id="moviePanel">
-      <div class="panel-heading" id="movie">
-       <strong><p id="movieP">Treat yourself with a great movie!</p></strong>   
-      </div>
-      <div class="panel-body"> 
-
-        <h3 style="display:inline;">Select Genre:</h3>
-        <br><br>
-
-        <select id="genList"></select>
-
-        <br><br>
-
-        <button class="btn btn-lg" id="search"type="button"  data-toggle="modal" data-target="#exampleModalScrollable" >Get Movies!</button>
-        <button class="btn btn-lg" id="dshbdRtn" onclick="window.location.href='/dashboard'">DashBoard</button>
-        <button class="btn btn-lg" id="saveGenre">Save Genre!</button>
-    </div>  
+                <div class="panel panel-default" id="moviePanel">
+                    <div class="panel-heading" id="movie">
+                     <strong><p id="movieP">Treat yourself with a great movie!</p></strong>   
+                    </div>
+                    <div class="panel-body"> 
+    
+                      <h3 style="display:inline;">Select Genre:</h3>
+                      <br><br>
+                    
+                      <select id="genList"></select>
+                    
+                      <br><br>
+                    
+                      <button class="btn btn-lg" id="search"type="button"  data-toggle="modal" data-target="#exampleModalScrollable" >Get Movies!</button>
+                      <button class="btn btn-lg" id="dshbdRtn" onclick="window.location.href='/dashboard'">DashBoard</button>
+                      <button class="btn btn-lg" id="saveGenre">Save Genre!</button>
+                  </div>  
                    
 
 <!-- Start of floating modal to display movies. -->
-    <div class="modal fade" id="exampleModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalScrollableTitle">New or Feature Releases</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button> 
-            </div>
-            <div class="modal-body" id="movieList">
-              {{!-- Movie list will be dynamically inserted here. --}}
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+                      <div class="modal fade" id="exampleModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-scrollable" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalScrollableTitle">New or Feature Releases</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body" id="movieList">
+                              {{!-- Movie list will be dynamically inserted here. --}}
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
 {{!-- Start of dinner panel --}}
       <div class="panel panel-default" id="dinnerPanel">
